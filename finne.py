@@ -16,4 +16,13 @@ def GDocsQuery(url, query):
     conn.close()
     return json.loads(p.search(dt.decode("utf-8")).group(1))
 
-pprint(GDocsQuery(sys.argv[1], "select F offset 1"))
+# Fetching user column
+users = {}
+query = GDocsQuery(sys.argv[1], "select F offset 1")
+
+# Filtering users, is there a Google "SQL" api to select unique ones?
+for row in query["table"]["rows"]:
+    if not row["c"][0]["v"] in users:
+        users[row["c"][0]["v"]] = 0
+
+print(users)
