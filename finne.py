@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # TODO error handling
+# TODO specify week no
 
-import http.client, re, sys, urllib.parse, json
+import http.client, re, sys, urllib.parse, json, datetime
 from pprint import pprint
 
 p = re.compile("google.visualization.Query.setResponse[(](.*)[)];$")
@@ -16,14 +17,20 @@ def GDocsQuery(url, query):
     conn.close()
     return json.loads(p.search(dt.decode("utf-8")).group(1))
 
+def DoQuery(column):
+    return GDocsQuery(sys.argv[1], "select F, sum("+column+ ") "+
+        "where G = '"+datetime.date.today().strftime("%Y-W%U")+"' and ("+
+        " or ".join(map(lambda x: "B='"+x+"'", boards))+
+        ") group by F")
+
 # Settings
 hourlimit = 10
 hourrate = 10
 boards = [ "Лабораторія", "Організаційне", "Актуальні проекти"]
+column = [ "D", "E" ]
 
 # Fetching user column
 users = {}
-query = GDocsQuery(sys.argv[1], "select F, sum(D) where "+" or ".join(map(lambda x: "B='"+x+"'", boards))+" group by F")
-print("select F, sum(D) where "+" and ".join(map(lambda x: "B='"+x+"'", boards))+" group by F")
+query = DoQuery("D")
 
 pprint(query)
