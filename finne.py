@@ -8,6 +8,7 @@ import http.client, re, sys, urllib.parse, json, datetime
 from pprint import pprint
 
 p = re.compile("google.visualization.Query.setResponse[(](.*)[)];$")
+curweek = datetime.date.today().strftime("%Y-W%U")
 
 def GDocsQuery(url, query):
     conn = http.client.HTTPSConnection("docs.google.com")
@@ -19,7 +20,7 @@ def GDocsQuery(url, query):
 
 def DoQuery(column):
     return GDocsQuery(sys.argv[1], "select F, sum("+column+ ") "+
-        "where G = '"+datetime.date.today().strftime("%Y-W%U")+"' and ("+
+        "where G = '"+curweek+"' and ("+
         " or ".join(map(lambda x: "B='"+x+"'", boards))+
         ") group by F")
 
@@ -27,10 +28,9 @@ def DoQuery(column):
 hourlimit = 10
 hourrate = 10
 boards = [ "Лабораторія", "Організаційне", "Актуальні проекти"]
-column = [ "D", "E" ]
 
-# Fetching user column
-users = {}
-query = DoQuery("D")
-
-pprint(query)
+# Fetching data
+print(curweek + ":")
+query = DoQuery("D")["table"]["rows"]
+for row in query:
+    print("-> "+row["c"][0]["v"]+": $"+str(round(hourrate * min(row["c"][1]["v"], hourlimit),2)))
