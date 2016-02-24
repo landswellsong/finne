@@ -18,11 +18,14 @@ def GDocsQuery(url, query):
     conn.close()
     return json.loads(p.search(dt.decode("utf-8")).group(1))
 
-def DoQuery(column):
-    return GDocsQuery(sys.argv[1], "select F, sum("+column+ ") "+
+def DoQuery():
+    return GDocsQuery(sys.argv[1], "select F, sum(D), sum(E) "+
         "where G = '"+curweek+"' and ("+
         " or ".join(map(lambda x: "B='"+x+"'", boards))+
         ") group by F")
+
+def ToMoney(n):
+    return "$"+str(round(hourrate * min(n, hourlimit),2))
 
 # Settings
 hourlimit = 10
@@ -31,6 +34,6 @@ boards = [ "Лабораторія", "Організаційне", "Актуал
 
 # Fetching data
 print(curweek + ":")
-query = DoQuery("D")["table"]["rows"]
+query = DoQuery()["table"]["rows"]
 for row in query:
-    print("-> "+row["c"][0]["v"]+": $"+str(round(hourrate * min(row["c"][1]["v"], hourlimit),2)))
+    print("-> "+row["c"][0]["v"]+": "+ToMoney(row["c"][1]["v"]) + " / "+ToMoney(row["c"][2]["v"]))

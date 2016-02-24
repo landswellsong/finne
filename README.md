@@ -11,9 +11,9 @@ Where document key is extracted from GoogleDocs URL as follows:
 ```
 $ ./finne.py <OUR PLUS SPREADSHEET KEY>
 2016-W08:
--> landswellsong: $4.8
--> rostylav: $0.0
--> tetianayeskova: $18.7
+-> landswellsong: $22.8 / $40.0
+-> rostylav: $0.0 / $100
+-> tetianayeskova: $18.7 / $100
 ```
 
 # TODO
