@@ -19,18 +19,11 @@ def GDocsQuery(url, query):
 # Settings
 hourlimit = 10
 hourrate = 10
+boards = [ "Лабораторія", "Організаційне", "Актуальні проекти"]
 
 # Fetching user column
 users = {}
-query = GDocsQuery(sys.argv[1], "select F, sum(D) group by F")
-
-# # Filtering users, is there a Google "SQL" api to select unique ones?
-# for row in query["table"]["rows"]:
-#     if not row["c"][0]["v"] in users:
-#         users[row["c"][0]["v"]] = 0
-#
-# # For each user fetch a sum
-# for user in users:
-#     query=GDocsQuery(sys.argv[1], "select sum()")
+query = GDocsQuery(sys.argv[1], "select F, sum(D) where "+" or ".join(map(lambda x: "B='"+x+"'", boards))+" group by F")
+print("select F, sum(D) where "+" and ".join(map(lambda x: "B='"+x+"'", boards))+" group by F")
 
 pprint(query)
