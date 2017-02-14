@@ -18,3 +18,5 @@ $ ./finne.py <OUR PLUS SPREADSHEET KEY>
 
 # TODO
 - Week selection
+
+
